@@ -1,3 +1,5 @@
+var version = '0.5.1';
+
 // define access token
 mapboxgl.accessToken = 'pk.eyJ1IjoicGZydWgiLCJhIjoiY2l4aG1oODhkMDAwdTJ6bzIzM3A0eG5qOSJ9.0YfW_nJrhdJNLIFPXypZgw';
 
@@ -74,6 +76,16 @@ var pieChart = new Chart(ctx, {
 
 // wait for map to load before adjusting it
 map.on('load', function () {
+    map.addControl(new mapboxgl.NavigationControl(), 'top-left');
+    map.addControl(new mapboxgl.ScaleControl({
+        maxWidth: 80,
+        unit: 'metric'
+    }));
+
+    var attrib = document.getElementsByClassName("mapboxgl-ctrl-attrib")[0];
+
+    attrib.innerHTML = 'v' + version + ' ' + attrib.innerHTML;
+
     map.addLayer({
         'id': '3d-buildings',
         'source': 'composite',

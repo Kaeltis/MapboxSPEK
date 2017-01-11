@@ -76,16 +76,3 @@ p {
     max-width: 250px;
     visibility: hidden;
 }
-
-#heartbeat {
-    left: 50%;
-    bottom: 0;
-    margin-bottom: 40px;
-    transform: translate(-50%, 0);
-    padding: 10px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    background: rgba(255, 255, 255, 0.3);
-    line-height: 18px;
-    height: 50px;
-    width: 600px;
-}
