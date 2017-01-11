@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SPEK</title>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v0.31.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v0.31.0/mapbox-gl.css' rel='stylesheet'/>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        h2,
+        h3 {
+            margin: 10px;
+            font-size: 1.2em;
+        }
+
+        h3 {
+            font-size: 1em;
+        }
+
+        p {
+            font-size: 0.85em;
+            margin: 10px;
+            text-align: left;
+        }
+
+        /**
+        * Create a position for the map
+        * on the page */
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /**
+        * Set rules for how the map overlays
+        * (info box and legend) will be displayed
+        * on the page. */
+        .map-overlay {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.8);
+            margin-right: 20px;
+            font-family: Arial, sans-serif;
+            overflow: auto;
+            border-radius: 3px;
+        }
+
+        #features {
+            top: 0;
+            height: 100px;
+            margin-top: 20px;
+            width: 250px;
+        }
+
+        #legend {
+            padding: 10px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            line-height: 18px;
+            height: 150px;
+            margin-bottom: 40px;
+            width: 200px;
+        }
+
+        .legend-key {
+            display: inline-block;
+            border-radius: 20%;
+            width: 10px;
+            height: 10px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+<div id='map'></div>
+<div class='map-overlay' id='features'><h2>Info</h2>
+    <div id='pd'><p>Hover over a region!</p></div>
+</div>
+<div class='map-overlay' id='legend'></div>
+<script>
+    // define access token
+    mapboxgl.accessToken = 'pk.eyJ1IjoicGZydWgiLCJhIjoiY2l4aG1oODhkMDAwdTJ6bzIzM3A0eG5qOSJ9.0YfW_nJrhdJNLIFPXypZgw';
+
+    //create map
+    var map = new mapboxgl.Map({
+        container: 'map', // container id
+        style: 'mapbox://styles/pfruh/cixswel7n001u2ro5tm5e4hco' // map style URL from Mapbox Studio
+    });
+
+    // wait for map to load before adjusting it
+    map.on('load', function () {
+
+        var namings = {
+            "bahn-75": "Bahn - DB",
+            "bahn-70": "Bahn - DB",
+            "bahn-65": "Bahn - DB",
+            "bahn-60": "Bahn - DB",
+            "bahn-55": "Bahn - DB",
+            "bahn-kvb-hgk-75": "Bahn - KVB & HGK",
+            "bahn-kvb-hgk-70": "Bahn - KVB & HGK",
+            "bahn-kvb-hgk-65": "Bahn - KVB & HGK",
+            "bahn-kvb-hgk-60": "Bahn - KVB & HGK",
+            "bahn-kvb-hgk-55": "Bahn - KVB & HGK",
+            "industrie-hafen-75": "Industrie & Häfen",
+            "industrie-hafen-70": "Industrie & Häfen",
+            "industrie-hafen-65": "Industrie & Häfen",
+            "industrie-hafen-60": "Industrie & Häfen",
+            "industrie-hafen-55": "Industrie & Häfen",
+            "strasse-75": "Straße",
+            "strasse-70": "Straße",
+            "strasse-65": "Straße",
+            "strasse-60": "Straße",
+            "strasse-55": "Straße",
+            "gruen": "Grünfläche"
+        };
+
+        var layers = Object.keys(namings);
+
+        // create legend
+        layers.forEach(function (layer) {
+            var color = map.getPaintProperty(layer, 'fill-color');
+            var item = document.createElement('div');
+            var key = document.createElement('span');
+            key.className = 'legend-key';
+            key.style.backgroundColor = color;
+
+            var value = document.createElement('span');
+            value.innerHTML = namings[layer];
+            item.appendChild(key);
+            item.appendChild(value);
+            legend.appendChild(item);
+        });
+
+        // change info window on hover
+        map.on('mousemove', function (e) {
+            var regions = map.queryRenderedFeatures(e.point, {
+                layers: layers
+            });
+
+            if (regions.length > 0) {
+                if (regions[0].properties.Name != undefined)
+                    document.getElementById('pd').innerHTML = "<h3><strong>" + namings[regions[0].layer.id] + "</strong></h3><p><em>" + regions[0].properties.Name + "</em></p>";
+                else
+                    document.getElementById('pd').innerHTML = "<h3><strong>" + namings[regions[0].layer.id] + "</strong></h3><p><em>" + regions[0].properties.TEXT + "</em></p>";
+            } else {
+                document.getElementById('pd').innerHTML = '<p>Hover over a region!</p>';
+            }
+        });
+
+    });
+</script>
+</body>
+</html>
