@@ -1,4 +1,4 @@
-var version = '0.5.1';
+var version = '0.5.2';
 
 // define access token
 mapboxgl.accessToken = 'pk.eyJ1IjoicGZydWgiLCJhIjoiY2l4aG1oODhkMDAwdTJ6bzIzM3A0eG5qOSJ9.0YfW_nJrhdJNLIFPXypZgw';
@@ -179,7 +179,6 @@ function updateChart() {
     clone.pop();
 
     var greenSize = turf.area(currentGreenRegion);
-    var onePercentGreen = greenSize / 100;
 
     /*
      var regionsToCheck = map.queryRenderedFeatures({
@@ -203,17 +202,19 @@ function updateChart() {
 
         if (intersection != undefined) {
             if (region.layer.id.includes('bahn-kvb-hgk'))
-                pieChart.data.datasets[0].data[1] += turf.area(intersection) / onePercentGreen;
+                pieChart.data.datasets[0].data[1] += turf.area(intersection) * 100 / greenSize;
             else if (region.layer.id.includes('bahn'))
-                pieChart.data.datasets[0].data[0] += turf.area(intersection) / onePercentGreen;
+                pieChart.data.datasets[0].data[0] += turf.area(intersection) * 100 / greenSize;
             else if (region.layer.id.includes('industrie-hafen'))
-                pieChart.data.datasets[0].data[2] += turf.area(intersection) / onePercentGreen;
+                pieChart.data.datasets[0].data[2] += turf.area(intersection) * 100 / greenSize;
             else if (region.layer.id.includes('strasse'))
-                pieChart.data.datasets[0].data[3] += turf.area(intersection) / onePercentGreen;
+                pieChart.data.datasets[0].data[3] += turf.area(intersection) * 100 / greenSize;
         }
     });
 
     pieChart.data.datasets[0].data[4] = 100 - pieChart.data.datasets[0].data[3] - pieChart.data.datasets[0].data[2] - pieChart.data.datasets[0].data[1] - pieChart.data.datasets[0].data[0];
+
+    console.log(pieChart.data.datasets[0].data);
 
     pieChart.update();
 
