@@ -68,8 +68,8 @@
             padding: 10px;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
             line-height: 18px;
-            height: 150px;
-            width: 200px;
+            max-height: 100px;
+            max-width: 200px;
         }
 
         #piechart {
@@ -146,9 +146,10 @@
         };
 
         var layers = Object.keys(namings);
+        var legendLayers = ['bahn-75', 'bahn-kvb-hgk-75', 'industrie-hafen-75', 'strasse-75', 'gruen'];
 
         // create legend
-        layers.forEach(function (layer) {
+        legendLayers.forEach(function (layer) {
             var color = map.getPaintProperty(layer, 'fill-color');
             var item = document.createElement('div');
             var key = document.createElement('span');
