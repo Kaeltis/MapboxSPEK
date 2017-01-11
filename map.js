@@ -19,7 +19,6 @@ var pieChart = new Chart(ctx, {
     data: {
         labels: ["DB", "KVB & HGK", "Industrie & Häfen", "Straße", "Lärmfrei"],
         datasets: [{
-            label: '% des Lärms',
             data: [10, 10, 10, 10, 10],
             backgroundColor: [
                 'rgba(208, 18, 30, 0.2)',
@@ -37,6 +36,12 @@ var pieChart = new Chart(ctx, {
             ],
             borderWidth: 1
         }]
+    },
+    options: {
+        title: {
+            display: true,
+            text: 'Verteilung des Lärms'
+        }
     }
 });
 
@@ -91,14 +96,15 @@ map.on('load', function () {
             layers: layers
         });
 
-        if (regions.length > 0) {
-            updateChartValues(regions);
+        var hasgreen = false;
 
+        if (regions.length > 0) {
             document.getElementById('pd').innerHTML = "";
             regions.forEach(function (region) {
                 if (region.layer.id == 'gruen') {
                     // Grünfläche
                     document.getElementById('pd').innerHTML += "<h3><strong>" + namings[region.layer.id] + "</strong></h3><p><em>" + region.properties.Name + "</em></p><p><em>Größe: <strong>" + parseFloat(turf.area(region) / 10000).toFixed(2) + " Hektar</strong></em></p>";
+                    hasgreen = true;
                 } else {
                     // Keine Grünfläche
                     document.getElementById('pd').innerHTML += "<h3><strong>" + namings[region.layer.id] + "</strong></h3><p><em>" + region.properties.TEXT + "</em></p>";
@@ -108,7 +114,13 @@ map.on('load', function () {
             document.getElementById('pd').innerHTML = '<p>Please hover over a region!</p>';
         }
 
-        pieChart.update();
+        if (hasgreen) {
+            document.getElementById('piechart').style.visibility = "visible";
+            updateChartValues(regions);
+            pieChart.update();
+        } else {
+            document.getElementById('piechart').style.visibility = "hidden";
+        }
     });
 
 });
