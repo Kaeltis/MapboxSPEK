@@ -171,7 +171,6 @@
 
             if (regions.length > 0) {
                 document.getElementById('pd').innerHTML = "";
-
                 regions.forEach(function (region) {
                     if (region.properties.Name != undefined) {
                         // Grünfläche
@@ -181,9 +180,8 @@
                         document.getElementById('pd').innerHTML += "<h3><strong>" + namings[region.layer.id] + "</strong></h3><p><em>" + region.properties.TEXT + "</em></p>";
                     }
                 });
-
             } else {
-                document.getElementById('pd').innerHTML = '<p>Hover over a region!</p>';
+                document.getElementById('pd').innerHTML = '<p>Please hover over a region!</p>';
             }
         });
 
