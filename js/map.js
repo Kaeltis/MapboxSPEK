@@ -1,4 +1,4 @@
-var version = '0.5.2';
+var version = '0.5.3';
 
 // define access token
 mapboxgl.accessToken = 'pk.eyJ1IjoicGZydWgiLCJhIjoiY2l4aG1oODhkMDAwdTJ6bzIzM3A0eG5qOSJ9.0YfW_nJrhdJNLIFPXypZgw';
@@ -197,10 +197,14 @@ function updateChart() {
         layers: clone
     });
 
+    var noiseFreeArea = currentGreenRegion;
     regionsToCheck.forEach(function (region) {
         var intersection = turf.intersect(currentGreenRegion, region);
 
         if (intersection != undefined) {
+            //TODO: crashes
+            noiseFreeArea = turf.difference(noiseFreeArea, region);
+
             if (region.layer.id.includes('bahn-kvb-hgk'))
                 pieChart.data.datasets[0].data[1] += turf.area(intersection) * 100 / greenSize;
             else if (region.layer.id.includes('bahn'))
@@ -212,7 +216,7 @@ function updateChart() {
         }
     });
 
-    pieChart.data.datasets[0].data[4] = 100 - pieChart.data.datasets[0].data[3] - pieChart.data.datasets[0].data[2] - pieChart.data.datasets[0].data[1] - pieChart.data.datasets[0].data[0];
+    pieChart.data.datasets[0].data[4] = turf.area(noiseFreeArea) * 100 / greenSize;
 
     console.log(pieChart.data.datasets[0].data);
 
