@@ -111,6 +111,8 @@
         style: 'mapbox://styles/pfruh/cixswel7n001u2ro5tm5e4hco' // map style URL from Mapbox Studio
     });
 
+    map.getCanvas().style.cursor = 'default';
+
     // wait for map to load before adjusting it
     map.on('load', function () {
 
