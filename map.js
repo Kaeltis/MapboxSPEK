@@ -4,7 +4,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoicGZydWgiLCJhIjoiY2l4aG1oODhkMDAwdTJ6bzIzM3A0e
 //create map
 var map = new mapboxgl.Map({
     container: 'map', // container id
-    style: 'mapbox://styles/pfruh/cixswel7n001u2ro5tm5e4hco', // map style URL from Mapbox Studio
+    style: 'mapbox://styles/pfruh/cixswel7n001u2ro5tm5e4hco',
     center: [6.960347, 50.937599],
     zoom: 12,
     minZoom: 12,
@@ -14,24 +14,26 @@ var map = new mapboxgl.Map({
 map.getCanvas().style.cursor = 'default';
 
 var ctx = document.getElementById("piechart");
-var myChart = new Chart(ctx, {
+var pieChart = new Chart(ctx, {
     type: 'pie',
     data: {
-        labels: ["DB", "KVB & HGK", "Industrie & Häfen", "Straße"],
+        labels: ["DB", "KVB & HGK", "Industrie & Häfen", "Straße", "Lärmfrei"],
         datasets: [{
             label: '% des Lärms',
-            data: [10, 10, 10, 10],
+            data: [10, 10, 10, 10, 10],
             backgroundColor: [
                 'rgba(208, 18, 30, 0.2)',
                 'rgba(247, 167, 35, 0.2)',
                 'rgba(28, 118, 166, 0.2)',
-                'rgba(87, 87, 86, 0.2)'
+                'rgba(87, 87, 86, 0.2)',
+                'rgba(0, 255, 0, 0.2)'
             ],
             borderColor: [
                 'rgba(208, 18, 30, 1)',
                 'rgba(247, 167, 35, 1)',
                 'rgba(28, 118, 166, 1)',
-                'rgba(87, 87, 86, 1)'
+                'rgba(87, 87, 86, 1)',
+                'rgba(0, 255, 0, 1)'
             ],
             borderWidth: 1
         }]
@@ -41,6 +43,7 @@ var myChart = new Chart(ctx, {
 // wait for map to load before adjusting it
 map.on('load', function () {
 
+    // define layer names
     var namings = {
         "bahn-75": "Bahn - DB",
         "bahn-70": "Bahn - DB",
@@ -64,7 +67,6 @@ map.on('load', function () {
         "strasse-55": "Straße",
         "gruen": "Grünfläche"
     };
-
     var layers = Object.keys(namings);
     var legendLayers = ['bahn-75', 'bahn-kvb-hgk-75', 'industrie-hafen-75', 'strasse-75', 'gruen'];
 
@@ -83,16 +85,18 @@ map.on('load', function () {
         legend.appendChild(item);
     });
 
-    // change info window on hover
+    // change stuff on hover over layer
     map.on('mousemove', function (e) {
         var regions = map.queryRenderedFeatures(e.point, {
             layers: layers
         });
 
         if (regions.length > 0) {
+            updateChartValues(regions);
+
             document.getElementById('pd').innerHTML = "";
             regions.forEach(function (region) {
-                if (region.properties.Name != undefined) {
+                if (region.layer.id == 'gruen') {
                     // Grünfläche
                     document.getElementById('pd').innerHTML += "<h3><strong>" + namings[region.layer.id] + "</strong></h3><p><em>" + region.properties.Name + "</em></p><p><em>Größe: <strong>" + parseFloat(turf.area(region) / 10000).toFixed(2) + " Hektar</strong></em></p>";
                 } else {
@@ -103,6 +107,45 @@ map.on('load', function () {
         } else {
             document.getElementById('pd').innerHTML = '<p>Please hover over a region!</p>';
         }
+
+        pieChart.update();
     });
 
 });
+
+function updateChartValues(regions) {
+    var gruenregion;
+
+    pieChart.data.datasets[0].data[0] = 0;
+    pieChart.data.datasets[0].data[1] = 0;
+    pieChart.data.datasets[0].data[2] = 0;
+    pieChart.data.datasets[0].data[3] = 0;
+    pieChart.data.datasets[0].data[4] = 0;
+
+    regions.forEach(function (region) {
+        if (region.layer.id == 'gruen') {
+            gruenregion = region;
+        }
+    });
+
+    if (gruenregion != undefined && regions.length > 1) {
+        var gruenarea = turf.area(gruenregion);
+
+        var onepercent = gruenarea / 100;
+
+        regions.forEach(function (region) {
+            if (region.layer.id != 'gruen') {
+                if (region.layer.id.includes('bahn-kvb-hgk'))
+                    pieChart.data.datasets[0].data[1] = turf.area(turf.intersect(gruenregion, region)) / onepercent;
+                else if (region.layer.id.includes('bahn'))
+                    pieChart.data.datasets[0].data[0] = turf.area(turf.intersect(gruenregion, region)) / onepercent;
+                else if (region.layer.id.includes('industrie-hafen'))
+                    pieChart.data.datasets[0].data[2] = turf.area(turf.intersect(gruenregion, region)) / onepercent;
+                else if (region.layer.id.includes('strasse'))
+                    pieChart.data.datasets[0].data[3] = turf.area(turf.intersect(gruenregion, region)) / onepercent;
+            }
+        });
+    }
+
+    pieChart.data.datasets[0].data[4] = 100 - pieChart.data.datasets[0].data[3] - pieChart.data.datasets[0].data[2] - pieChart.data.datasets[0].data[1] - pieChart.data.datasets[0].data[0];
+}
