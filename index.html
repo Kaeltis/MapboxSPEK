@@ -5,6 +5,7 @@
     <title>SPEK</title>
     <script src='https://api.mapbox.com/mapbox-gl-js/v0.31.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v0.31.0/mapbox-gl.css' rel='stylesheet'/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.min.js"></script>
     <style>
         body {
             margin: 0;
@@ -43,10 +44,7 @@
         * on the page. */
         .map-overlay {
             position: absolute;
-            bottom: 0;
-            right: 0;
             background: rgba(255, 255, 255, 0.8);
-            margin-right: 20px;
             font-family: Arial, sans-serif;
             overflow: auto;
             border-radius: 3px;
@@ -54,18 +52,35 @@
 
         #features {
             top: 0;
-            height: 100px;
+            right: 0;
             margin-top: 20px;
+            margin-right: 20px;
+            height: 100px;
             width: 250px;
         }
 
         #legend {
+            bottom: 0;
+            right: 0;
+            margin-bottom: 40px;
+            margin-right: 20px;
             padding: 10px;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
             line-height: 18px;
             height: 150px;
-            margin-bottom: 40px;
             width: 200px;
+        }
+
+        #piechart {
+            bottom: 0;
+            left: 0;
+            margin-bottom: 40px;
+            margin-left: 20px;
+            padding: 10px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            line-height: 18px;
+            max-height: 250px;
+            max-width: 250px;
         }
 
         .legend-key {
@@ -78,11 +93,14 @@
     </style>
 </head>
 <body>
+
 <div id='map'></div>
 <div class='map-overlay' id='features'><h2>Info</h2>
     <div id='pd'><p>Hover over a region!</p></div>
 </div>
 <div class='map-overlay' id='legend'></div>
+<canvas class='map-overlay' id='piechart'></canvas>
+
 <script>
     // define access token
     mapboxgl.accessToken = 'pk.eyJ1IjoicGZydWgiLCJhIjoiY2l4aG1oODhkMDAwdTJ6bzIzM3A0eG5qOSJ9.0YfW_nJrhdJNLIFPXypZgw';
@@ -150,6 +168,44 @@
                     document.getElementById('pd').innerHTML = "<h3><strong>" + namings[regions[0].layer.id] + "</strong></h3><p><em>" + regions[0].properties.TEXT + "</em></p>";
             } else {
                 document.getElementById('pd').innerHTML = '<p>Hover over a region!</p>';
+            }
+        });
+
+        var ctx = document.getElementById("piechart");
+        var myChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+                datasets: [{
+                    label: '# of Votes',
+                    data: [12, 19, 3, 5, 2, 3],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
             }
         });
 
