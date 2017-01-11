@@ -56,7 +56,7 @@
             right: 0;
             margin-top: 20px;
             margin-right: 20px;
-            height: 150px;
+            height: 250px;
             width: 250px;
         }
 
@@ -169,10 +169,18 @@
             });
 
             if (regions.length > 0) {
-                if (regions[0].properties.Name != undefined)
-                    document.getElementById('pd').innerHTML = "<h3><strong>" + namings[regions[0].layer.id] + "</strong></h3><p><em>" + regions[0].properties.Name + "</em></p><p><em>Größe: <strong>" + parseFloat(turf.area(regions[0]) / 10000).toFixed(2) + " Hektar</strong></em></p>";
-                else
-                    document.getElementById('pd').innerHTML = "<h3><strong>" + namings[regions[0].layer.id] + "</strong></h3><p><em>" + regions[0].properties.TEXT + "</em></p>";
+                document.getElementById('pd').innerHTML = "";
+
+                regions.forEach(function (region) {
+                    if (region.properties.Name != undefined) {
+                        // Grünfläche
+                        document.getElementById('pd').innerHTML += "<h3><strong>" + namings[region.layer.id] + "</strong></h3><p><em>" + region.properties.Name + "</em></p><p><em>Größe: <strong>" + parseFloat(turf.area(region) / 10000).toFixed(2) + " Hektar</strong></em></p>";
+                    } else {
+                        // Keine Grünfläche
+                        document.getElementById('pd').innerHTML += "<h3><strong>" + namings[region.layer.id] + "</strong></h3><p><em>" + region.properties.TEXT + "</em></p>";
+                    }
+                });
+
             } else {
                 document.getElementById('pd').innerHTML = '<p>Hover over a region!</p>';
             }
