@@ -1,4 +1,4 @@
-const version = '0.6.2';
+const version = '0.6.3';
 
 // define access token
 mapboxgl.accessToken = 'pk.eyJ1IjoicGZydWgiLCJhIjoiY2l4aG1oODhkMDAwdTJ6bzIzM3A0eG5qOSJ9.0YfW_nJrhdJNLIFPXypZgw';
@@ -208,6 +208,7 @@ map.on('load', function () {
                         currentGreenRegion = region;
                         currentPoint = e.point;
                     }
+                    map.setFilter("gruen-hover", ["==", "KLRID", region.properties.KLRID]);
                 } else if (region.layer.id.includes('bahn-kvb-hgk') && maxBahnKvbHgk < region.properties.DBA) {
                     maxBahnKvbHgk = region.properties.DBA;
                 } else if (region.layer.id.includes('bahn') && maxBahn < region.properties.DBA) {
@@ -220,6 +221,7 @@ map.on('load', function () {
             });
         } else {
             document.getElementById('pd').innerHTML = '<p>Please hover over a region!</p>';
+            map.setFilter("gruen-hover", ["==", "KLRID", ""]);
         }
 
         barChart.data.datasets[0].data = [maxBahn, maxBahnKvbHgk, maxIndustrieHafen, maxStrasse];
@@ -236,6 +238,9 @@ map.on('load', function () {
         }
     });
 
+    map.on("mouseout", function () {
+        map.setFilter("gruen-hover", ["==", "KLRID", ""]);
+    });
 });
 
 let currentGreenRegion;
