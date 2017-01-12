@@ -138,7 +138,7 @@ const barChart = new Chart(bch, {
 
 // wait for map to load before adjusting it
 map.on('load', function () {
-    map.addControl(new mapboxgl.NavigationControl(), 'top-left');
+    //map.addControl(new mapboxgl.NavigationControl(), 'top-left');
     map.addControl(new mapboxgl.ScaleControl({
         maxWidth: 80,
         unit: 'metric'
