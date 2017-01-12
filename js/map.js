@@ -1,4 +1,4 @@
-const version = '0.5.5';
+const version = '0.6.0';
 
 // define access token
 mapboxgl.accessToken = 'pk.eyJ1IjoicGZydWgiLCJhIjoiY2l4aG1oODhkMDAwdTJ6bzIzM3A0eG5qOSJ9.0YfW_nJrhdJNLIFPXypZgw';
@@ -252,7 +252,14 @@ function updateChart() {
     const clone = layers.slice(0);
     clone.pop();
 
-    const greenSize = turf.area(currentGreenRegion);
+    let greenSize;
+
+    try {
+        greenSize = turf.area(currentGreenRegion);
+    } catch (err) {
+        console.error(err);
+        greenSize = 0;
+    }
 
     /*
      var regionsToCheck = map.queryRenderedFeatures({
@@ -273,7 +280,15 @@ function updateChart() {
 
     const noiseFreeArea = currentGreenRegion;
     regionsToCheck.forEach(function (region) {
-        const intersection = turf.intersect(currentGreenRegion, region);
+        let intersection;
+
+        // error-prone, catch major derps
+        try {
+            intersection = turf.intersect(currentGreenRegion, region);
+        } catch (err) {
+            console.error(err);
+            intersection = undefined;
+        }
 
         if (intersection != undefined) {
             //TODO: fix calculation
@@ -294,7 +309,7 @@ function updateChart() {
 
     pieChart.update();
 
-    setTimeout(updateChart, 500);
+    setTimeout(updateChart, 250);
 }
 
 for (let layer in toggleableMapLayers) {
