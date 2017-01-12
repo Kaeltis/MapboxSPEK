@@ -1,4 +1,4 @@
-const version = '0.6.4';
+const version = '0.7.0';
 
 // define access token
 mapboxgl.accessToken = 'pk.eyJ1IjoicGZydWgiLCJhIjoiY2l4aG1oODhkMDAwdTJ6bzIzM3A0eG5qOSJ9.0YfW_nJrhdJNLIFPXypZgw';
@@ -221,7 +221,7 @@ map.on('load', function () {
             });
         } else {
             document.getElementById('pd').innerHTML = '<p>Please hover over a region!</p>';
-            map.setFilter("gruen-hover", ["==", "Name", ""]);
+            map.setFilter("gruen-hover", ["==", "Name", "DISABLED"]);
         }
 
         barChart.data.datasets[0].data = [maxBahn, maxBahnKvbHgk, maxIndustrieHafen, maxStrasse];
@@ -239,7 +239,7 @@ map.on('load', function () {
     });
 
     map.on("mouseout", function () {
-        map.setFilter("gruen-hover", ["==", "Name", ""]);
+        map.setFilter("gruen-hover", ["==", "Name", "DISABLED"]);
     });
 });
 
