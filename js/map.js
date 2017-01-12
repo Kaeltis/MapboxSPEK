@@ -125,7 +125,8 @@ const barChart = new Chart(bch, {
             xAxes: [{
                 ticks: {
                     max: 75,
-                    suggestedMin: 55
+                    min: 50,
+                    stepSize: 5
                 }
             }],
             yAxes: [{
