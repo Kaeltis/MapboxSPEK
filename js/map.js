@@ -6,7 +6,8 @@ mapboxgl.accessToken = 'pk.eyJ1IjoicGZydWgiLCJhIjoiY2l4aG1oODhkMDAwdTJ6bzIzM3A0e
 //create map
 var map = new mapboxgl.Map({
     container: 'map', // container id
-    style: 'mapbox://styles/pfruh/cixswel7n001u2ro5tm5e4hco',
+    //style: 'mapbox://styles/pfruh/cixswel7n001u2ro5tm5e4hco',//Light
+    style: 'mapbox://styles/pfruh/cixti4qmn00492so6g4aw5cuc',
     center: [6.960347, 50.937599],
     zoom: 12,
     minZoom: 12,
