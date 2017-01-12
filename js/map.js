@@ -50,8 +50,8 @@ const toggleableMapLayers = {
     "Straße": ["strasse-75", "strasse-70", "strasse-65", "strasse-60", "strasse-55"]
 };
 
-const ctx = document.getElementById("piechart");
-const pieChart = new Chart(ctx, {
+const pch = document.getElementById("piechart");
+const pieChart = new Chart(pch, {
     type: 'pie',
     data: {
         labels: ["DB", "KVB & HGK", "Industrie & Hafen", "Straße", "Lärmfrei"],
@@ -77,7 +77,54 @@ const pieChart = new Chart(ctx, {
     options: {
         title: {
             display: true,
-            text: 'Verteilung des Lärms'
+            text: 'Anteil des Lärms'
+        },
+        legend: {
+            display: false
+        }
+    }
+});
+
+const bch = document.getElementById("barchart");
+const barChart = new Chart(bch, {
+    type: 'horizontalBar',
+    data: {
+        labels: ["DB", "KVB & HGK", "Industrie & Hafen", "Straße"],
+        datasets: [{
+            data: [0, 0, 0, 0],
+            backgroundColor: [
+                'rgba(208, 18, 30, 0.2)',
+                'rgba(247, 167, 35, 0.2)',
+                'rgba(28, 118, 166, 0.2)',
+                'rgba(87, 87, 86, 0.2)'
+            ],
+            borderColor: [
+                'rgba(208, 18, 30, 1)',
+                'rgba(247, 167, 35, 1)',
+                'rgba(28, 118, 166, 1)',
+                'rgba(87, 87, 86, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        title: {
+            display: true,
+            text: 'Stärke des Lärms'
+        },
+        legend: {
+            display: false
+        },
+        scales: {
+            xAxes: [{
+                ticks: {
+                    max: 75,
+                    suggestedMin: 55
+                }
+            }],
+            yAxes: [{
+                display: false
+            }]
         }
     }
 });
@@ -115,19 +162,21 @@ map.on('load', function () {
     });
 
     // create legend
-    legendLayers.forEach(function (layer) {
-        const color = map.getPaintProperty(layer, 'fill-color');
-        const item = document.createElement('div');
-        const key = document.createElement('span');
-        key.className = 'legend-key';
-        key.style.backgroundColor = color;
+    /*
+     legendLayers.forEach(function (layer) {
+     const color = map.getPaintProperty(layer, 'fill-color');
+     const item = document.createElement('div');
+     const key = document.createElement('span');
+     key.className = 'legend-key';
+     key.style.backgroundColor = color;
 
-        const value = document.createElement('span');
-        value.innerHTML = namings[layer];
-        item.appendChild(key);
-        item.appendChild(value);
-        legend.appendChild(item);
-    });
+     const value = document.createElement('span');
+     value.innerHTML = namings[layer];
+     item.appendChild(key);
+     item.appendChild(value);
+     legend.appendChild(item);
+     });
+     */
 
     // change stuff on hover over layer
     map.on('mousemove', function (e) {
@@ -139,6 +188,11 @@ map.on('load', function () {
 
         if (regions.length > 0) {
             document.getElementById('pd').innerHTML = "";
+            let maxBahn = 0;
+            let maxBahnKvbHgk = 0;
+            let maxIndustrieHafen = 0;
+            let maxStrasse = 0;
+
             regions.forEach(function (region) {
                 if (region.layer.id == 'gruen') {
                     // Grünfläche
@@ -148,11 +202,22 @@ map.on('load', function () {
                         currentGreenRegion = region;
                         currentPoint = e.point;
                     }
-                } else {
-                    // Keine Grünfläche
-                    document.getElementById('pd').innerHTML += "<h3><strong>" + namings[region.layer.id] + "</strong></h3><p><em>" + region.properties.TEXT + "</em></p>";
                 }
+                else if (region.layer.id.includes('bahn-kvb-hgk') && maxBahnKvbHgk < region.properties.DBA)
+                    maxBahnKvbHgk = region.properties.DBA;
+                else if (region.layer.id.includes('bahn') && maxBahn < region.properties.DBA)
+                    maxBahn = region.properties.DBA;
+                else if (region.layer.id.includes('industrie-hafen') && maxIndustrieHafen < region.properties.DBA)
+                    maxIndustrieHafen = region.properties.DBA;
+                else if (region.layer.id.includes('strasse') && maxStrasse < region.properties.DBA)
+                    maxStrasse = region.properties.DBA;
             });
+
+            barChart.data.datasets[0].data[0] = maxBahn;
+            barChart.data.datasets[0].data[1] = maxBahnKvbHgk;
+            barChart.data.datasets[0].data[2] = maxIndustrieHafen;
+            barChart.data.datasets[0].data[3] = maxStrasse;
+            barChart.update();
         } else {
             document.getElementById('pd').innerHTML = '<p>Please hover over a region!</p>';
         }

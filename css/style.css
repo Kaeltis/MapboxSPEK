@@ -143,7 +143,18 @@ p {
     padding: 10px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     line-height: 18px;
+    max-height: 200px;
+    max-width: 200px;
+    visibility: hidden;
+}
+
+#barchart {
+    bottom: 0;
+    right: 0;
+    margin-bottom: 40px;
+    margin-right: 20px;
+    padding: 10px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     max-height: 250px;
     max-width: 250px;
-    visibility: hidden;
 }
