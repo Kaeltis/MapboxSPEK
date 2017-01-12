@@ -204,7 +204,7 @@ function updateChart() {
 
         if (intersection != undefined) {
             //TODO: crashes
-            noiseFreeArea = turf.difference(noiseFreeArea, region);
+            //noiseFreeArea = turf.difference(noiseFreeArea, region);
 
             if (region.layer.id.includes('bahn-kvb-hgk'))
                 pieChart.data.datasets[0].data[1] += turf.area(intersection) * 100 / greenSize;
@@ -217,7 +217,7 @@ function updateChart() {
         }
     });
 
-    pieChart.data.datasets[0].data[4] = turf.area(noiseFreeArea) * 100 / greenSize;
+    pieChart.data.datasets[0].data[4] = 100- pieChart.data.datasets[0].data[0] - pieChart.data.datasets[0].data[1] - pieChart.data.datasets[0].data[2] - pieChart.data.datasets[0].data[3];
 
     console.log(pieChart.data.datasets[0].data);
 
