@@ -1,4 +1,4 @@
-const version = '0.6.0';
+const version = '0.6.1';
 
 // define access token
 mapboxgl.accessToken = 'pk.eyJ1IjoicGZydWgiLCJhIjoiY2l4aG1oODhkMDAwdTJ6bzIzM3A0eG5qOSJ9.0YfW_nJrhdJNLIFPXypZgw';
@@ -77,10 +77,16 @@ const pieChart = new Chart(pch, {
     options: {
         title: {
             display: true,
-            text: 'Anteil des Lärms'
+            text: 'Lärmbelastung'
         },
         legend: {
             display: false
+        },
+        pieceLabel: {
+            fontSize: 12,
+            fontColor: '#000',
+            fontStyle: 'strong',
+            fontFamily: "'Open Sans', sans-serif"
         }
     }
 });
@@ -186,6 +192,8 @@ map.on('load', function () {
 
         let hasGreen = false;
 
+        barChart.data.datasets[0].data = [0, 0, 0, 0];
+
         if (regions.length > 0) {
             let maxBahn = 0;
             let maxBahnKvbHgk = 0;
@@ -195,31 +203,29 @@ map.on('load', function () {
             regions.forEach(function (region) {
                 if (region.layer.id == 'gruen') {
                     // Grünfläche
-                    document.getElementById('pd').innerHTML = "<h3><strong>" + region.properties.Name + "</strong></h3><p><em>Größe: <strong>" + parseFloat(turf.area(region) / 10000).toFixed(2) + " Hektar</strong></em></p>";
+                    document.getElementById('pd').innerHTML = "<h3><strong>" + region.properties.Name + "</strong></h3><p>Fläche: <strong>" + parseFloat(turf.area(region) / 10000).toFixed(2) + " Hektar</strong></p>";
                     if (!hasGreen) {
                         hasGreen = true;
                         currentGreenRegion = region;
                         currentPoint = e.point;
                     }
-                }
-                else if (region.layer.id.includes('bahn-kvb-hgk') && maxBahnKvbHgk < region.properties.DBA)
+                } else if (region.layer.id.includes('bahn-kvb-hgk') && maxBahnKvbHgk < region.properties.DBA) {
                     maxBahnKvbHgk = region.properties.DBA;
-                else if (region.layer.id.includes('bahn') && maxBahn < region.properties.DBA)
+                } else if (region.layer.id.includes('bahn') && maxBahn < region.properties.DBA) {
                     maxBahn = region.properties.DBA;
-                else if (region.layer.id.includes('industrie-hafen') && maxIndustrieHafen < region.properties.DBA)
+                } else if (region.layer.id.includes('industrie-hafen') && maxIndustrieHafen < region.properties.DBA) {
                     maxIndustrieHafen = region.properties.DBA;
-                else if (region.layer.id.includes('strasse') && maxStrasse < region.properties.DBA)
+                } else if (region.layer.id.includes('strasse') && maxStrasse < region.properties.DBA) {
                     maxStrasse = region.properties.DBA;
+                }
             });
 
-            barChart.data.datasets[0].data[0] = maxBahn;
-            barChart.data.datasets[0].data[1] = maxBahnKvbHgk;
-            barChart.data.datasets[0].data[2] = maxIndustrieHafen;
-            barChart.data.datasets[0].data[3] = maxStrasse;
-            barChart.update();
+            barChart.data.datasets[0].data = [maxBahn, maxBahnKvbHgk, maxIndustrieHafen, maxStrasse];
         } else {
             document.getElementById('pd').innerHTML = '<p>Please hover over a region!</p>';
         }
+
+        barChart.update();
 
         if (hasGreen) {
             document.getElementById('piechart').style.visibility = "visible";
@@ -257,7 +263,7 @@ function updateChart() {
     try {
         greenSize = turf.area(currentGreenRegion);
     } catch (err) {
-        console.error(err);
+        console.error(err.message);
         greenSize = 0;
     }
 
@@ -286,7 +292,7 @@ function updateChart() {
         try {
             intersection = turf.intersect(currentGreenRegion, region);
         } catch (err) {
-            console.error(err);
+            console.error(err.message);
             intersection = undefined;
         }
 
