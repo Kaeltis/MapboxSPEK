@@ -1,13 +1,13 @@
-var version = '0.5.4';
+const version = '0.5.5';
 
 // define access token
 mapboxgl.accessToken = 'pk.eyJ1IjoicGZydWgiLCJhIjoiY2l4aG1oODhkMDAwdTJ6bzIzM3A0eG5qOSJ9.0YfW_nJrhdJNLIFPXypZgw';
 
 //create map
-var map = new mapboxgl.Map({
+const map = new mapboxgl.Map({
     container: 'map', // container id
-    //style: 'mapbox://styles/pfruh/cixswel7n001u2ro5tm5e4hco',//Light
-    style: 'mapbox://styles/pfruh/cixti4qmn00492so6g4aw5cuc',
+    //style: 'mapbox://styles/pfruh/cixswel7n001u2ro5tm5e4hco', // Light Style
+    style: 'mapbox://styles/pfruh/cixti4qmn00492so6g4aw5cuc', // Dark Style
     center: [6.960347, 50.937599],
     zoom: 12,
     minZoom: 12,
@@ -17,7 +17,7 @@ var map = new mapboxgl.Map({
 map.getCanvas().style.cursor = 'default';
 
 // define layer names
-var namings = {
+const namings = {
     "bahn-75": "Bahn - DB",
     "bahn-70": "Bahn - DB",
     "bahn-65": "Bahn - DB",
@@ -28,11 +28,11 @@ var namings = {
     "bahn-kvb-hgk-65": "Bahn - KVB & HGK",
     "bahn-kvb-hgk-60": "Bahn - KVB & HGK",
     "bahn-kvb-hgk-55": "Bahn - KVB & HGK",
-    "industrie-hafen-75": "Industrie & Häfen",
-    "industrie-hafen-70": "Industrie & Häfen",
-    "industrie-hafen-65": "Industrie & Häfen",
-    "industrie-hafen-60": "Industrie & Häfen",
-    "industrie-hafen-55": "Industrie & Häfen",
+    "industrie-hafen-75": "Industrie & Hafen",
+    "industrie-hafen-70": "Industrie & Hafen",
+    "industrie-hafen-65": "Industrie & Hafen",
+    "industrie-hafen-60": "Industrie & Hafen",
+    "industrie-hafen-55": "Industrie & Hafen",
     "strasse-75": "Straße",
     "strasse-70": "Straße",
     "strasse-65": "Straße",
@@ -40,14 +40,21 @@ var namings = {
     "strasse-55": "Straße",
     "gruen": "Grünfläche"
 };
-var layers = Object.keys(namings);
-var legendLayers = ['bahn-75', 'bahn-kvb-hgk-75', 'industrie-hafen-75', 'strasse-75', 'gruen'];
+const layers = Object.keys(namings);
+const legendLayers = ['bahn-75', 'bahn-kvb-hgk-75', 'industrie-hafen-75', 'strasse-75', 'gruen'];
 
-var ctx = document.getElementById("piechart");
-var pieChart = new Chart(ctx, {
+const toggleableMapLayers = {
+    "Bahn - DB": ["bahn-75", "bahn-70", "bahn-65", "bahn-60", "bahn-55"],
+    "Bahn - KVB & HGK": ["bahn-kvb-hgk-75", "bahn-kvb-hgk-70", "bahn-kvb-hgk-65", "bahn-kvb-hgk-60", "bahn-kvb-hgk-55"],
+    "Industrie & Hafen": ["industrie-hafen-75", "industrie-hafen-70", "industrie-hafen-65", "industrie-hafen-60", "industrie-hafen-55"],
+    "Straße": ["strasse-75", "strasse-70", "strasse-65", "strasse-60", "strasse-55"]
+};
+
+const ctx = document.getElementById("piechart");
+const pieChart = new Chart(ctx, {
     type: 'pie',
     data: {
-        labels: ["DB", "KVB & HGK", "Industrie & Häfen", "Straße", "Lärmfrei"],
+        labels: ["DB", "KVB & HGK", "Industrie & Hafen", "Straße", "Lärmfrei"],
         datasets: [{
             data: [10, 10, 10, 10, 10],
             backgroundColor: [
@@ -83,7 +90,7 @@ map.on('load', function () {
         unit: 'metric'
     }));
 
-    var attrib = document.getElementsByClassName("mapboxgl-ctrl-attrib")[0];
+    const attrib = document.getElementsByClassName("mapboxgl-ctrl-attrib")[0];
 
     attrib.innerHTML = 'v' + version + ' ' + attrib.innerHTML;
 
@@ -109,13 +116,13 @@ map.on('load', function () {
 
     // create legend
     legendLayers.forEach(function (layer) {
-        var color = map.getPaintProperty(layer, 'fill-color');
-        var item = document.createElement('div');
-        var key = document.createElement('span');
+        const color = map.getPaintProperty(layer, 'fill-color');
+        const item = document.createElement('div');
+        const key = document.createElement('span');
         key.className = 'legend-key';
         key.style.backgroundColor = color;
 
-        var value = document.createElement('span');
+        const value = document.createElement('span');
         value.innerHTML = namings[layer];
         item.appendChild(key);
         item.appendChild(value);
@@ -124,11 +131,11 @@ map.on('load', function () {
 
     // change stuff on hover over layer
     map.on('mousemove', function (e) {
-        var regions = map.queryRenderedFeatures(e.point, {
+        const regions = map.queryRenderedFeatures(e.point, {
             layers: layers
         });
 
-        var hasGreen = false;
+        let hasGreen = false;
 
         if (regions.length > 0) {
             document.getElementById('pd').innerHTML = "";
@@ -161,8 +168,8 @@ map.on('load', function () {
 
 });
 
-var currentGreenRegion;
-var currentPoint;
+let currentGreenRegion;
+let currentPoint;
 updateChart();
 function updateChart() {
     if (!(currentGreenRegion != undefined && currentPoint != undefined)) {
@@ -176,10 +183,10 @@ function updateChart() {
     pieChart.data.datasets[0].data[3] = 0;
     pieChart.data.datasets[0].data[4] = 0;
 
-    var clone = layers.slice(0);
+    const clone = layers.slice(0);
     clone.pop();
 
-    var greenSize = turf.area(currentGreenRegion);
+    const greenSize = turf.area(currentGreenRegion);
 
     /*
      var regionsToCheck = map.queryRenderedFeatures({
@@ -189,21 +196,21 @@ function updateChart() {
 
     //TODO: better calculate size to check for
     //too big = lag, too small = missing layers
-    var width = map.getZoom() * 15;
-    var height = map.getZoom() * 15;
-    var regionsToCheck = map.queryRenderedFeatures([
+    const width = map.getZoom() * 15;
+    const height = map.getZoom() * 15;
+    const regionsToCheck = map.queryRenderedFeatures([
         [currentPoint.x - width / 2, currentPoint.y - height / 2],
         [currentPoint.x + width / 2, currentPoint.y + height / 2]
     ], {
         layers: clone
     });
 
-    var noiseFreeArea = currentGreenRegion;
+    const noiseFreeArea = currentGreenRegion;
     regionsToCheck.forEach(function (region) {
-        var intersection = turf.intersect(currentGreenRegion, region);
+        const intersection = turf.intersect(currentGreenRegion, region);
 
         if (intersection != undefined) {
-            //TODO: crashes
+            //TODO: fix calculation
             //noiseFreeArea = turf.difference(noiseFreeArea, region);
 
             if (region.layer.id.includes('bahn-kvb-hgk'))
@@ -217,11 +224,41 @@ function updateChart() {
         }
     });
 
-    pieChart.data.datasets[0].data[4] = 100- pieChart.data.datasets[0].data[0] - pieChart.data.datasets[0].data[1] - pieChart.data.datasets[0].data[2] - pieChart.data.datasets[0].data[3];
-
-    console.log(pieChart.data.datasets[0].data);
+    pieChart.data.datasets[0].data[4] = 100 - pieChart.data.datasets[0].data[0] - pieChart.data.datasets[0].data[1] - pieChart.data.datasets[0].data[2] - pieChart.data.datasets[0].data[3];
 
     pieChart.update();
 
     setTimeout(updateChart, 500);
+}
+
+for (let layer in toggleableMapLayers) {
+    const link = document.createElement('a');
+    link.href = '#';
+    link.className = removeLayerDba(toggleableMapLayers[layer][0]);
+    link.textContent = layer;
+
+    link.onclick = function (e) {
+        const clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+
+        toggleableMapLayers[clickedLayer].forEach((layer) => {
+            const visibility = map.getLayoutProperty(layer, 'visibility');
+
+            if (visibility === 'visible') {
+                map.setLayoutProperty(layer, 'visibility', 'none');
+                this.className = '';
+            } else {
+                this.className = removeLayerDba(layer);
+                map.setLayoutProperty(layer, 'visibility', 'visible');
+            }
+        });
+    };
+
+    const layersMenu = document.getElementById('menu');
+    layersMenu.appendChild(link);
+}
+
+function removeLayerDba(layername) {
+    return layername.slice(0, -3);
 }
