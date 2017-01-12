@@ -187,7 +187,6 @@ map.on('load', function () {
         let hasGreen = false;
 
         if (regions.length > 0) {
-            document.getElementById('pd').innerHTML = "";
             let maxBahn = 0;
             let maxBahnKvbHgk = 0;
             let maxIndustrieHafen = 0;
@@ -196,7 +195,7 @@ map.on('load', function () {
             regions.forEach(function (region) {
                 if (region.layer.id == 'gruen') {
                     // Grünfläche
-                    document.getElementById('pd').innerHTML += "<h3><strong>" + namings[region.layer.id] + "</strong></h3><p><em>" + region.properties.Name + "</em></p><p><em>Größe: <strong>" + parseFloat(turf.area(region) / 10000).toFixed(2) + " Hektar</strong></em></p>";
+                    document.getElementById('pd').innerHTML = "<h3><strong>" + region.properties.Name + "</strong></h3><p><em>Größe: <strong>" + parseFloat(turf.area(region) / 10000).toFixed(2) + " Hektar</strong></em></p>";
                     if (!hasGreen) {
                         hasGreen = true;
                         currentGreenRegion = region;
@@ -224,8 +223,10 @@ map.on('load', function () {
 
         if (hasGreen) {
             document.getElementById('piechart').style.visibility = "visible";
+            document.getElementById('features').style.visibility = "visible";
         } else {
             document.getElementById('piechart').style.visibility = "hidden";
+            document.getElementById('features').style.visibility = "hidden";
             currentGreenRegion = undefined;
             currentPoint = undefined;
         }
