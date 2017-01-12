@@ -193,14 +193,12 @@ map.on('load', function () {
 
         let hasGreen = false;
 
-        barChart.data.datasets[0].data = [0, 0, 0, 0];
+        let maxBahn = 0;
+        let maxBahnKvbHgk = 0;
+        let maxIndustrieHafen = 0;
+        let maxStrasse = 0;
 
         if (regions.length > 0) {
-            let maxBahn = 0;
-            let maxBahnKvbHgk = 0;
-            let maxIndustrieHafen = 0;
-            let maxStrasse = 0;
-
             regions.forEach(function (region) {
                 if (region.layer.id == 'gruen') {
                     // Grünfläche
@@ -220,12 +218,11 @@ map.on('load', function () {
                     maxStrasse = region.properties.DBA;
                 }
             });
-
-            barChart.data.datasets[0].data = [maxBahn, maxBahnKvbHgk, maxIndustrieHafen, maxStrasse];
         } else {
             document.getElementById('pd').innerHTML = '<p>Please hover over a region!</p>';
         }
 
+        barChart.data.datasets[0].data = [maxBahn, maxBahnKvbHgk, maxIndustrieHafen, maxStrasse];
         barChart.update();
 
         if (hasGreen) {
