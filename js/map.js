@@ -208,7 +208,7 @@ map.on('load', function () {
                         currentGreenRegion = region;
                         currentPoint = e.point;
                     }
-                    map.setFilter("gruen-hover", ["==", "KLRID", region.properties.KLRID]);
+                    map.setFilter("gruen-hover", ["==", "Name", region.properties.Name]);
                 } else if (region.layer.id.includes('bahn-kvb-hgk') && maxBahnKvbHgk < region.properties.DBA) {
                     maxBahnKvbHgk = region.properties.DBA;
                 } else if (region.layer.id.includes('bahn') && maxBahn < region.properties.DBA) {
@@ -221,7 +221,7 @@ map.on('load', function () {
             });
         } else {
             document.getElementById('pd').innerHTML = '<p>Please hover over a region!</p>';
-            map.setFilter("gruen-hover", ["==", "KLRID", ""]);
+            map.setFilter("gruen-hover", ["==", "Name", ""]);
         }
 
         barChart.data.datasets[0].data = [maxBahn, maxBahnKvbHgk, maxIndustrieHafen, maxStrasse];
@@ -239,7 +239,7 @@ map.on('load', function () {
     });
 
     map.on("mouseout", function () {
-        map.setFilter("gruen-hover", ["==", "KLRID", ""]);
+        map.setFilter("gruen-hover", ["==", "Name", ""]);
     });
 });
 
