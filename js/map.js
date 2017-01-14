@@ -4,19 +4,15 @@ const version = '0.7.1';
 mapboxgl.accessToken = 'pk.eyJ1IjoicGZydWgiLCJhIjoiY2l4aG1oODhkMDAwdTJ6bzIzM3A0eG5qOSJ9.0YfW_nJrhdJNLIFPXypZgw';
 
 //create map
-if (!mapboxgl.supported()) {
-    alert('Your browser does not support Mapbox GL!\nPlease try the latest Google Chrome or Mozilla Firefox!');
-} else {
-    const map = new mapboxgl.Map({
-        container: 'map', // container id
-        //style: 'mapbox://styles/pfruh/cixswel7n001u2ro5tm5e4hco', // Light Style
-        style: 'mapbox://styles/pfruh/cixti4qmn00492so6g4aw5cuc', // Dark Style
-        center: [6.960347, 50.937599],
-        zoom: 12,
-        minZoom: 12,
-        maxBounds: [[6.742486, 50.839562], [7.197363, 51.096117]]
-    });
-}
+const map = new mapboxgl.Map({
+    container: 'map', // container id
+    //style: 'mapbox://styles/pfruh/cixswel7n001u2ro5tm5e4hco', // Light Style
+    style: 'mapbox://styles/pfruh/cixti4qmn00492so6g4aw5cuc', // Dark Style
+    center: [6.960347, 50.937599],
+    zoom: 12,
+    minZoom: 12,
+    maxBounds: [[6.742486, 50.839562], [7.197363, 51.096117]]
+});
 
 map.getCanvas().style.cursor = 'default';
 
