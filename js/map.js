@@ -76,7 +76,7 @@ const pieChart = new Chart(pch, {
     },
     options: {
         title: {
-            display: true,
+            display: false,
             text: 'Lärmbelastung'
         },
         legend: {
@@ -116,7 +116,7 @@ const barChart = new Chart(bch, {
     options: {
         title: {
             display: true,
-            text: 'Stärke des Lärms'
+            text: 'Lärmausprägung'
         },
         legend: {
             display: false
