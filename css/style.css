@@ -2,6 +2,8 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Open Sans', sans-serif;
+    display: flex;
+    justify-content: center;
 }
 
 h2,
@@ -43,8 +45,6 @@ p {
     background: rgba(255, 255, 255, 0.8);
     position: absolute;
     z-index: 1;
-    left: 50%;
-    margin-left: -163px;
     margin-top: 20px;
     border-radius: 3px;
     border: 1px solid rgba(0, 0, 0, 0.4);
