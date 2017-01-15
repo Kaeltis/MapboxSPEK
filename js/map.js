@@ -77,7 +77,8 @@ const pieChart = new Chart(pch, {
     options: {
         title: {
             display: false,
-            text: 'Lärmbelastung'
+            text: 'Lärmbelastung',
+            fontFamily: "'Open Sans', sans-serif"
         },
         legend: {
             display: false
@@ -116,7 +117,9 @@ const barChart = new Chart(bch, {
     options: {
         title: {
             display: true,
-            text: 'Lärmausprägung'
+            text: 'Lärmausprägung',
+            fontFamily: "'Open Sans', sans-serif",
+            fontStyle: 'normal'
         },
         legend: {
             display: false
