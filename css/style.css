@@ -139,6 +139,9 @@ p {
     max-height: 300px;
     max-width: 300px;
     visibility: hidden;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 }
 
 #legend {
