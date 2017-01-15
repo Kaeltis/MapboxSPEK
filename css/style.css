@@ -50,7 +50,7 @@ p {
     border: 1px solid rgba(0, 0, 0, 0.4);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     display: flex;
-    /* flex-direction: column; */
+    flex-direction: column;
 }
 
 .menu__title{
